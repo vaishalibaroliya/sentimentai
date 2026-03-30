@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Sentiment AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body {
+            background: url("{{ url_for('static', filename='background.jpeg') }}") no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(10, 15, 30, 0.88);
+            z-index: -1;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0; width: 100%;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 60px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .brand { font-size: 22px; font-weight: 700; }
+
+        .menu a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+        .menu a:hover { color: #3b82f6; }
+
+        .page {
+            padding: 100px 40px 60px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.07);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .card h2 { font-size: 22px; margin-bottom: 20px; color: #93c5fd; }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            padding: 20px 10px;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .stat-box span { display: block; font-size: 28px; font-weight: 700; margin-top: 6px; }
+        .stat-total { color: #fff; }
+        .stat-pos   { color: #10b981; }
+        .stat-neg   { color: #ef4444; }
+        .stat-neu   { color: #f59e0b; }
+
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.06);
+            color: white;
+            font-size: 15px;
+            outline: none;
+            transition: 0.3s;
+            margin-bottom: 14px;
+        }
+
+        textarea { height: 110px; resize: none; }
+        textarea:focus, input[type="text"]:focus {
+            border-color: #3b82f6;
+            background: rgba(255,255,255,0.1);
+        }
+        textarea::placeholder, input::placeholder { color: rgba(255,255,255,0.4); }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #2563eb, #9333ea);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .btn:hover { transform: scale(1.02); opacity: 0.95; }
+
+        .result-box {
+            padding: 20px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.08);
+            border-left: 5px solid #3b82f6;
+            margin-top: 18px;
+            animation: fadeIn 0.4s ease;
+        }
+        .result-box p { font-size: 13px; opacity: 0.7; }
+        .result-box h3 { font-size: 22px; margin-top: 5px; }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-positive { background: rgba(16,185,129,0.2); color: #10b981; }
+        .badge-negative { background: rgba(239,68,68,0.2);  color: #ef4444; }
+        .badge-neutral  { background: rgba(245,158,11,0.2); color: #f59e0b; }
+
+        .news-item {
+            padding: 16px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 12px;
+            transition: background 0.2s;
+        }
+        .news-item:hover { background: rgba(255,255,255,0.09); }
+        .news-item p { font-size: 14px; line-height: 1.6; margin-bottom: 8px; }
+
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        .news-meta a { color: #93c5fd; text-decoration: none; }
+        .news-meta a:hover { text-decoration: underline; }
+
+        .spinner { display: none; text-align: center; padding: 20px; font-size: 14px; opacity: 0.7; }
+
+        .search-summary { display: flex; gap: 15px; margin-bottom: 16px; flex-wrap: wrap; }
+        .search-summary span { padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+        .ss-total    { background: rgba(255,255,255,0.1); }
+        .ss-positive { background: rgba(16,185,129,0.15); color: #10b981; }
+        .ss-negative { background: rgba(239,68,68,0.15);  color: #ef4444; }
+        .ss-neutral  { background: rgba(245,158,11,0.15); color: #f59e0b; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .navbar { padding: 0 20px; }
+            .page { padding: 90px 16px 40px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <h2 class="brand">Sentiment AI</h2>
+    <div class="menu">
+        <a href="/">Home</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+        <a href="/about">About</a>
+    </div>
+</nav>
+
+<div class="page">
+
+    <!-- STATS ROW -->
+    <div class="stats">
+        <div class="stat-box stat-total">Total Reviews <span>{{ total }}</span></div>
+        <div class="stat-box stat-pos">Positive <span>{{ positive }}</span></div>
+        <div class="stat-box stat-neg">Negative <span>{{ negative }}</span></div>
+        <div class="stat-box stat-neu">Neutral <span>{{ neutral }}</span></div>
+    </div>
+
+    <!-- MANUAL COMMENT ANALYSIS -->
+    <div class="card">
+        <h2>✍️ Analyze a Comment</h2>
+        <form method="POST">
+            <textarea name="comment" placeholder="Paste any comment or review here..."></textarea>
+            <input type="hidden" name="keyword" value="{{ search_keyword or 'technology' }}">
+            <button type="submit" class="btn">Analyze Now</button>
+        </form>
+
+        {% if result %}
+        <div class="result-box">
+            <p>Analysis Result:</p>
+            {% if result == 'Positive' %}
+            <h3>✅ Positive</h3>
+            {% elif result == 'Negative' %}
+            <h3>❌ Negative</h3>
+            {% else %}
+            <h3>⚪ Neutral</h3>
+            {% endif %}
+            {% if confidence %}
+            <p style="margin-top:8px; font-size:14px;">Confidence: <strong>{{ confidence }}</strong></p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- KEYWORD SEARCH FOR REAL DATA -->
+    <div class="card">
+        <h2>🔍 Search Real News by Keyword</h2>
+        <input type="text" id="keywordInput" placeholder="Enter keyword e.g. cricket, AI, Bitcoin, Modi..." />
+        <button class="btn" onclick="searchKeyword()">Fetch Real Data &amp; Analyze</button>
+        <div class="spinner" id="spinner">⏳ Fetching real news data, please wait...</div>
+        <div id="searchResults"></div>
+    </div>
+
+    <!-- NEWS RESULTS FROM FORM POST -->
+    {% if news_results %}
+    <div class="card">
+        <h2>📰 Results for "{{ search_keyword }}"</h2>
+        <div class="search-summary">
+            <span class="ss-total">Total: {{ news_results | length }}</span>
+            <span class="ss-positive">✅ Positive: {{ news_results | selectattr('sentiment','equalto','Positive') | list | length }}</span>
+            <span class="ss-negative">❌ Negative: {{ news_results | selectattr('sentiment','equalto','Negative') | list | length }}</span>
+            <span class="ss-neutral">⚪ Neutral: {{ news_results | selectattr('sentiment','equalto','Neutral') | list | length }}</span>
+        </div>
+        <div class="news-list">
+            {% for item in news_results %}
+            <div class="news-item">
+                <p>{{ item.text }}</p>
+                <div class="news-meta">
+                    <span>📰 {{ item.source }}</span>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span class="badge badge-{{ item.sentiment | lower }}">{{ item.sentiment }}</span>
+                        <span>{{ item.confidence }}% confidence</span>
+                        {% if item.url and item.url != '#' %}
+                        <a href="{{ item.url }}" target="_blank">Read &#8594;</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+async function searchKeyword() {
+    var keyword = document.getElementById('keywordInput').value.trim();
+    if (!keyword) {
+        alert('Please enter a keyword first!');
+        return;
+    }
+
+    document.getElementById('spinner').style.display = 'block';
+    document.getElementById('searchResults').innerHTML = '';
+
+    try {
+        var res = await fetch('/search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ keyword: keyword, limit: 30 })
+        });
+
+        var data = await res.json();
+        document.getElementById('spinner').style.display = 'none';
+
+        if (data.error) {
+            document.getElementById('searchResults').innerHTML =
+                '<p style="color:#ef4444;margin-top:15px;">⚠️ ' + data.error + '</p>';
+            return;
+        }
+
+        var html = '<div style="margin-top:20px;">';
+        html += '<div class="search-summary">';
+        html += '<span class="ss-total">Total: ' + data.total + '</span>';
+        html += '<span class="ss-positive">✅ Positive: ' + data.positive + '</span>';
+        html += '<span class="ss-negative">❌ Negative: ' + data.negative + '</span>';
+        html += '<span class="ss-neutral">⚪ Neutral: ' + data.neutral + '</span>';
+        html += '</div><div class="news-list">';
+
+        data.results.forEach(function(item) {
+            var badgeClass = item.sentiment === 'Positive' ? 'badge-positive'
+                           : item.sentiment === 'Negative' ? 'badge-negative'
+                           : 'badge-neutral';
+            var icon = item.sentiment === 'Positive' ? '✅'
+                     : item.sentiment === 'Negative' ? '❌' : '⚪';
+            var readLink = (item.url && item.url !== '#')
+                ? '<a href="' + item.url + '" target="_blank">Read →</a>' : '';
+
+            html += '<div class="news-item">';
+            html += '<p>' + item.text + '</p>';
+            html += '<div class="news-meta">';
+            html += '<span>📰 ' + item.source + '</span>';
+            html += '<div style="display:flex;align-items:center;gap:10px;">';
+            html += '<span class="badge ' + badgeClass + '">' + icon + ' ' + item.sentiment + '</span>';
+            html += '<span>' + item.confidence + '% confidence</span>';
+            html += readLink;
+            html += '</div></div></div>';
+        });
+
+        html += '</div></div>';
+        document.getElementById('searchResults').innerHTML = html;
+        refreshStats();
+
+    } catch(err) {
+        document.getElementById('spinner').style.display = 'none';
+        document.getElementById('searchResults').innerHTML =
+            '<p style="color:#ef4444;margin-top:15px;">⚠️ Something went wrong. Please try again.</p>';
+    }
+}
+
+async function refreshStats() {
+    try {
+        var res = await fetch('/summary');
+        var data = await res.json();
+        var spans = document.querySelectorAll('.stat-box span');
+        spans[0].textContent = data.total;
+        spans[1].textContent = data.positive;
+        spans[2].textContent = data.negative;
+        spans[3].textContent = data.neutral;
+    } catch(e) {}
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('keywordInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') searchKeyword();
+    });
+});
+</script>
+
+</body>
+</html>

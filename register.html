@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* RESET & BASE */
         * {
             margin: 0;
             padding: 0;
@@ -16,15 +15,12 @@
         }
 
         body {
-            margin: 0;
-            /* Flask compatible background path */
             background: url("{{ url_for('static', filename='background.jpeg') }}") no-repeat center center fixed;
             background-size: cover;
             color: white;
             min-height: 100vh;
         }
 
-        /* DARK OVERLAY */
         body::before {
             content: "";
             position: fixed;
@@ -36,7 +32,6 @@
             z-index: -1;
         }
 
-        /* NAVBAR */
         .navbar {
             position: fixed;
             top: 0;
@@ -48,7 +43,6 @@
             padding: 0 60px;
             background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(10px);
-            z-index: 1000;
         }
 
         .navbar h2 {
@@ -60,24 +54,15 @@
             color: white;
             text-decoration: none;
             margin-left: 25px;
-            font-size: 14px;
-            transition: color 0.3s;
         }
 
-        .nav-links a:hover {
-            color: #3b82f6;
-        }
-
-        /* CENTER BOX */
         .center-box {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            width: 100%;
         }
 
-        /* REGISTER CARD */
         .register-card {
             width: 420px;
             padding: 45px;
@@ -86,34 +71,19 @@
             backdrop-filter: blur(20px);
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .register-card h2 {
-            margin-bottom: 25px;
-            font-size: 28px;
-            font-weight: 600;
-        }
-
-        /* INPUTS */
         .register-card input {
             width: 100%;
             padding: 14px;
             margin: 10px 0;
-            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             background: rgba(255, 255, 255, 0.05);
             color: white;
+            border: none;
             outline: none;
-            transition: 0.3s;
         }
 
-        .register-card input:focus {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: #3b82f6;
-        }
-
-        /* BUTTON */
         .btn-register {
             width: 100%;
             padding: 14px;
@@ -124,29 +94,6 @@
             color: white;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .btn-register:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
-        }
-
-        /* LOGIN LINK */
-        .register-card p {
-            margin-top: 20px;
-            font-size: 14px;
-            opacity: 0.8;
-        }
-
-        .register-card a {
-            color: #3b82f6;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .register-card a:hover {
-            text-decoration: underline;
         }
     </style>
 </head>
@@ -168,8 +115,9 @@
         <div class="register-card">
             <h2>Register</h2>
 
+            <!-- ✅ FIXED FORM -->
             <form method="POST">
-                <input type="text" name="username" placeholder="Full Name" required>
+                <input type="text" name="name" placeholder="Full Name" required> <!-- FIXED -->
                 <input type="email" name="email" placeholder="Email Address" required>
                 <input type="password" name="password" placeholder="Password" required>
                 

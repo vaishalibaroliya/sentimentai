@@ -1,5 +1,4 @@
 import sqlite3
-import requests
 import pandas as pd
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
@@ -8,7 +7,9 @@ from googleapiclient.discovery import build
 app = Flask(__name__)
 DB_PATH = "database.db"
 
-# ⚠️ Make sure your API Key is unrestricted for YouTube Data API v3
+# ==============================
+# YOUR YOUTUBE API KEY
+# ==============================
 YOUTUBE_API_KEY = "AIzaSyCgcCrMS1uivhs-a2YLNZEXF1s0wfzsfRU"
 
 analyzer = SentimentIntensityAnalyzer()
@@ -44,7 +45,6 @@ def analyze_sentiment(text):
         return 'Neutral', 0
     scores = analyzer.polarity_scores(text)
     compound = scores['compound']
-
     if compound >= 0.05:
         return 'Positive', round(50 + (compound * 50), 1)
     elif compound <= -0.05:
@@ -52,7 +52,7 @@ def analyze_sentiment(text):
     else:
         return 'Neutral', round((1 - abs(compound)) * 100, 1)
 
-# ---------------- Dashboard Summary ----------------
+# ---------------- Summary ----------------
 def get_summary():
     conn = sqlite3.connect(DB_PATH)
     df = pd.read_sql("SELECT sentiment FROM comments", conn)
@@ -64,7 +64,7 @@ def get_summary():
         "total": total,
         "positive": len(df[df['sentiment'] == 'Positive']),
         "negative": len(df[df['sentiment'] == 'Negative']),
-        "neutral": len(df[df['sentiment'] == 'Neutral'])
+        "neutral":  len(df[df['sentiment'] == 'Neutral'])
     }
 
 # ---------------- ROUTES ----------------
@@ -77,9 +77,9 @@ def home():
 def dashboard():
     result = None
     confidence = None
-    
+
     if request.method == "POST":
-        comment_text = request.form.get("comment")
+        comment_text = request.form.get("comment", "").strip()
         if comment_text:
             sentiment, conf = analyze_sentiment(comment_text)
             conn = sqlite3.connect(DB_PATH)
@@ -95,17 +95,19 @@ def dashboard():
     summary = get_summary()
     return render_template("dashboard.html", result=result, confidence=confidence, **summary)
 
-# ---------------- UPDATED: KEYWORD FETCH ROUTE ----------------
-@app.route("/fetch_by_keyword", methods=["POST"])
-def fetch_by_keyword():
-    keyword = request.form.get("keyword")
+# ---------------- MAIN: YouTube Keyword Search (AJAX) ----------------
+@app.route("/search", methods=["POST"])
+def search():
+    data = request.get_json()
+    keyword = data.get('keyword', '').strip()
+
     if not keyword:
-        return redirect(url_for('dashboard'))
+        return jsonify({'error': 'Please enter a keyword'}), 400
 
     try:
         youtube = build('youtube', 'v3', developerKey=YOUTUBE_API_KEY)
 
-        # 1. Search for the top 5 videos based on the keyword
+        # Search top 5 videos for the keyword
         search_response = youtube.search().list(
             q=keyword,
             part="snippet",
@@ -114,14 +116,16 @@ def fetch_by_keyword():
             order="relevance"
         ).execute()
 
+        results = []
         conn = sqlite3.connect(DB_PATH)
 
-        # 2. Loop through each video found and get comments
         for video in search_response.get('items', []):
             video_id = video['id']['videoId']
-            
+            video_title = video['snippet']['title']
+            channel = video['snippet']['channelTitle']
+
             try:
-                # Fetch top 10 comments for THIS video
+                # Fetch top 10 comments per video
                 comment_response = youtube.commentThreads().list(
                     part="snippet",
                     videoId=video_id,
@@ -131,31 +135,59 @@ def fetch_by_keyword():
 
                 for item in comment_response.get('items', []):
                     text = item['snippet']['topLevelComment']['snippet']['textDisplay']
-                    sentiment, conf = analyze_sentiment(text)
-                    
+                    author = item['snippet']['topLevelComment']['snippet']['authorDisplayName']
+                    likes = item['snippet']['topLevelComment']['snippet']['likeCount']
+
+                    if len(text.strip()) < 5:
+                        continue
+
+                    sentiment, confidence = analyze_sentiment(text)
+
                     conn.execute(
                         "INSERT INTO comments (text, sentiment, confidence, source, keyword) VALUES (?, ?, ?, ?, ?)",
-                        (text, sentiment, conf, 'youtube_search', keyword)
+                        (text, sentiment, confidence, 'youtube', keyword)
                     )
+
+                    results.append({
+                        'text': text[:300],
+                        'author': author,
+                        'likes': likes,
+                        'video_title': video_title,
+                        'channel': channel,
+                        'video_url': f"https://youtube.com/watch?v={video_id}",
+                        'sentiment': sentiment,
+                        'confidence': confidence
+                    })
+
             except Exception:
-                # Skip videos that have comments disabled
+                # Skip videos with disabled comments
                 continue
-        
+
         conn.commit()
         conn.close()
-        return redirect(url_for('dashboard'))
+
+        pos = sum(1 for r in results if r['sentiment'] == 'Positive')
+        neg = sum(1 for r in results if r['sentiment'] == 'Negative')
+        neu = sum(1 for r in results if r['sentiment'] == 'Neutral')
+
+        return jsonify({
+            'keyword': keyword,
+            'total': len(results),
+            'positive': pos,
+            'negative': neg,
+            'neutral': neu,
+            'results': results
+        })
 
     except Exception as e:
-        return f"Error connecting to YouTube: {str(e)}", 500
+        return jsonify({'error': f'YouTube API error: {str(e)}'}), 500
 
-# ---------------- ADMIN & AUTH ----------------
-@app.route("/admin")
-def admin():
-    conn = sqlite3.connect(DB_PATH)
-    users = conn.execute("SELECT * FROM users").fetchall()
-    conn.close()
-    return render_template("admin.html", users=users)
+# ---------------- Stats API ----------------
+@app.route("/summary")
+def summary_api():
+    return jsonify(get_summary())
 
+# ---------------- Auth ----------------
 @app.route("/login", methods=["GET", "POST"])
 def login():
     error = None
@@ -163,15 +195,55 @@ def login():
         email = request.form.get("email")
         password = request.form.get("password")
         conn = sqlite3.connect(DB_PATH)
-        cur = conn.execute("SELECT * FROM users WHERE email=? AND password=?", (email, password))
-        user = cur.fetchone()
+        user = conn.execute(
+            "SELECT * FROM users WHERE email=? AND password=?", (email, password)
+        ).fetchone()
         conn.close()
-        if user: return redirect(url_for("dashboard"))
-        else: error = "Invalid email or password"
+        if user:
+            return redirect(url_for("dashboard"))
+        else:
+            error = "Invalid email or password"
     return render_template("login.html", error=error)
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     error = None
     if request.method == "POST":
-        name = request
+        name = request.form.get("name")
+        email = request.form.get("email")
+        password = request.form.get("password")
+        conn = sqlite3.connect(DB_PATH)
+        try:
+            conn.execute(
+                "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
+                (name, email, password)
+            )
+            conn.commit()
+        except sqlite3.IntegrityError:
+            conn.close()
+            return render_template("register.html", error="Email already registered.")
+        conn.close()
+        return redirect(url_for("login"))
+    return render_template("register.html")
+
+@app.route("/forgot", methods=["GET", "POST"])
+def forgot():
+    if request.method == "POST":
+        return redirect(url_for("login"))
+    return render_template("forgot.html")
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+@app.route("/admin")
+def admin():
+    conn = sqlite3.connect(DB_PATH)
+    users = conn.execute("SELECT * FROM users").fetchall()
+    conn.close()
+    return render_template("admin.html", users=users)
+
+# ---------------- Run ----------------
+if __name__ == "__main__":
+    init_db()
+    app.run(debug=True, port=5001)

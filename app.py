@@ -3,12 +3,12 @@ import requests
 import pandas as pd
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-from googleapiclient.discovery import build # ⚠️ Make sure to: pip install google-api-python-client
+from googleapiclient.discovery import build
 
 app = Flask(__name__)
 DB_PATH = "database.db"
 
-# ⚠️ Replace with your actual YouTube API Key from Google Console
+# ⚠️ Make sure your API Key is unrestricted for YouTube Data API v3
 YOUTUBE_API_KEY = "AIzaSyCgcCrMS1uivhs-a2YLNZEXF1s0wfzsfRU"
 
 analyzer = SentimentIntensityAnalyzer()
@@ -79,7 +79,6 @@ def dashboard():
     confidence = None
     
     if request.method == "POST":
-        # Check if user is doing a manual single comment analysis
         comment_text = request.form.get("comment")
         if comment_text:
             sentiment, conf = analyze_sentiment(comment_text)
@@ -96,42 +95,58 @@ def dashboard():
     summary = get_summary()
     return render_template("dashboard.html", result=result, confidence=confidence, **summary)
 
-# ---------------- NEW: YOUTUBE FETCH ROUTE ----------------
-@app.route("/fetch_youtube", methods=["POST"])
-def fetch_youtube():
-    video_url = request.form.get("video_url")
-    # Extract Video ID from URL (e.g., https://www.youtube.com/watch?v=dQw4w9WgXcQ)
-    if "v=" in video_url:
-        video_id = video_url.split("v=")[1].split("&")[0]
-    else:
-        return "Invalid YouTube URL", 400
+# ---------------- UPDATED: KEYWORD FETCH ROUTE ----------------
+@app.route("/fetch_by_keyword", methods=["POST"])
+def fetch_by_keyword():
+    keyword = request.form.get("keyword")
+    if not keyword:
+        return redirect(url_for('dashboard'))
 
     try:
         youtube = build('youtube', 'v3', developerKey=YOUTUBE_API_KEY)
-        request_yt = youtube.commentThreads().list(
+
+        # 1. Search for the top 5 videos based on the keyword
+        search_response = youtube.search().list(
+            q=keyword,
             part="snippet",
-            videoId=video_id,
-            maxResults=20, # Fetch 20 comments
-            textFormat="plainText"
-        )
-        response = request_yt.execute()
+            type="video",
+            maxResults=5,
+            order="relevance"
+        ).execute()
 
         conn = sqlite3.connect(DB_PATH)
-        for item in response['items']:
-            text = item['snippet']['topLevelComment']['snippet']['textDisplay']
-            sentiment, conf = analyze_sentiment(text)
+
+        # 2. Loop through each video found and get comments
+        for video in search_response.get('items', []):
+            video_id = video['id']['videoId']
             
-            conn.execute(
-                "INSERT INTO comments (text, sentiment, confidence, source, keyword) VALUES (?, ?, ?, ?, ?)",
-                (text, sentiment, conf, 'youtube', video_id)
-            )
+            try:
+                # Fetch top 10 comments for THIS video
+                comment_response = youtube.commentThreads().list(
+                    part="snippet",
+                    videoId=video_id,
+                    maxResults=10,
+                    textFormat="plainText"
+                ).execute()
+
+                for item in comment_response.get('items', []):
+                    text = item['snippet']['topLevelComment']['snippet']['textDisplay']
+                    sentiment, conf = analyze_sentiment(text)
+                    
+                    conn.execute(
+                        "INSERT INTO comments (text, sentiment, confidence, source, keyword) VALUES (?, ?, ?, ?, ?)",
+                        (text, sentiment, conf, 'youtube_search', keyword)
+                    )
+            except Exception:
+                # Skip videos that have comments disabled
+                continue
         
         conn.commit()
         conn.close()
         return redirect(url_for('dashboard'))
 
     except Exception as e:
-        return f"Error fetching YouTube comments: {str(e)}", 500
+        return f"Error connecting to YouTube: {str(e)}", 500
 
 # ---------------- ADMIN & AUTH ----------------
 @app.route("/admin")
@@ -159,18 +174,4 @@ def login():
 def register():
     error = None
     if request.method == "POST":
-        name = request.form.get("name")
-        email = request.form.get("email")
-        password = request.form.get("password")
-        conn = sqlite3.connect(DB_PATH)
-        try:
-            conn.execute("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", (name, email, password))
-            conn.commit()
-        except sqlite3.IntegrityError: error = "Email already exists"
-        conn.close()
-        if not error: return redirect(url_for("login"))
-    return render_template("register.html", error=error)
-
-if __name__ == "__main__":
-    init_db()
-    app.run(debug=True)
+        name = request

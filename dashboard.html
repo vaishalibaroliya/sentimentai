@@ -87,7 +87,7 @@
         .stat-neg   { color: #ef4444; }
         .stat-neu   { color: #f59e0b; }
 
-        textarea, input[type="text"] {
+        input[type="text"] {
             width: 100%;
             padding: 14px;
             border: 1px solid rgba(255,255,255,0.1);
@@ -100,12 +100,11 @@
             margin-bottom: 14px;
         }
 
-        textarea { height: 110px; resize: none; }
-        textarea:focus, input[type="text"]:focus {
+        input[type="text"]:focus {
             border-color: #3b82f6;
             background: rgba(255,255,255,0.1);
         }
-        textarea::placeholder, input::placeholder { color: rgba(255,255,255,0.4); }
+        input::placeholder { color: rgba(255,255,255,0.4); }
 
         .btn {
             width: 100%;
@@ -120,58 +119,168 @@
             transition: transform 0.2s, opacity 0.2s;
         }
         .btn:hover { transform: scale(1.02); opacity: 0.95; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-        .result-box {
-            padding: 20px;
-            border-radius: 14px;
-            background: rgba(255,255,255,0.08);
-            border-left: 5px solid #3b82f6;
-            margin-top: 18px;
-            animation: fadeIn 0.4s ease;
+        /* QUICK TAGS */
+        .quick-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
         }
-        .result-box p { font-size: 13px; opacity: 0.7; }
-        .result-box h3 { font-size: 22px; margin-top: 5px; }
+
+        .quick-tags label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
+            align-self: center;
+        }
+
+        .tag {
+            padding: 5px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: transparent;
+            color: rgba(255,255,255,0.6);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .tag:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+            background: rgba(59,130,246,0.08);
+        }
+
+        /* SPINNER */
+        .spinner {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .spinner-dots {
+            display: inline-flex;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .spinner-dots span {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #3b82f6;
+            animation: bounce 1.2s infinite ease-in-out;
+        }
+        .spinner-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .spinner-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* SUMMARY PILLS */
+        .search-summary {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-summary span {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .ss-total    { background: rgba(255,255,255,0.1); }
+        .ss-positive { background: rgba(16,185,129,0.15); color: #10b981; }
+        .ss-negative { background: rgba(239,68,68,0.15);  color: #ef4444; }
+        .ss-neutral  { background: rgba(245,158,11,0.15); color: #f59e0b; }
+
+        /* SENTIMENT BAR */
+        .sentiment-bar {
+            display: flex;
+            height: 6px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 24px;
+            gap: 2px;
+        }
+        .bar-pos { background: #10b981; }
+        .bar-neg { background: #ef4444; }
+        .bar-neu { background: #f59e0b; }
+
+        /* COMMENT CARDS */
+        .comment-card {
+            padding: 16px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 12px;
+            border-left: 3px solid transparent;
+            transition: background 0.2s;
+            animation: fadeIn 0.3s ease both;
+        }
+
+        .comment-card:hover { background: rgba(255,255,255,0.07); }
+        .comment-card.positive { border-left-color: #10b981; }
+        .comment-card.negative { border-left-color: #ef4444; }
+        .comment-card.neutral  { border-left-color: #f59e0b; }
+
+        .comment-text {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .comment-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .comment-left { display: flex; align-items: center; gap: 10px; }
 
         .badge {
             display: inline-block;
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
             font-weight: 600;
         }
         .badge-positive { background: rgba(16,185,129,0.2); color: #10b981; }
         .badge-negative { background: rgba(239,68,68,0.2);  color: #ef4444; }
         .badge-neutral  { background: rgba(245,158,11,0.2); color: #f59e0b; }
 
-        .news-item {
-            padding: 16px;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            margin-bottom: 12px;
-            transition: background 0.2s;
-        }
-        .news-item:hover { background: rgba(255,255,255,0.09); }
-        .news-item p { font-size: 14px; line-height: 1.6; margin-bottom: 8px; }
-
-        .news-meta {
+        .video-link {
+            color: #ff4444;
+            text-decoration: none;
+            font-size: 11px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            font-size: 12px;
-            opacity: 0.7;
+            gap: 4px;
         }
-        .news-meta a { color: #93c5fd; text-decoration: none; }
-        .news-meta a:hover { text-decoration: underline; }
+        .video-link:hover { color: #ff6666; }
 
-        .spinner { display: none; text-align: center; padding: 20px; font-size: 14px; opacity: 0.7; }
-
-        .search-summary { display: flex; gap: 15px; margin-bottom: 16px; flex-wrap: wrap; }
-        .search-summary span { padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; }
-        .ss-total    { background: rgba(255,255,255,0.1); }
-        .ss-positive { background: rgba(16,185,129,0.15); color: #10b981; }
-        .ss-negative { background: rgba(239,68,68,0.15);  color: #ef4444; }
-        .ss-neutral  { background: rgba(245,158,11,0.15); color: #f59e0b; }
+        .error-msg {
+            padding: 14px;
+            border-radius: 10px;
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.2);
+            color: #ef4444;
+            font-size: 13px;
+            margin-top: 14px;
+        }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(8px); }
@@ -202,80 +311,53 @@
 
     <!-- STATS ROW -->
     <div class="stats">
-        <div class="stat-box stat-total">Total Reviews <span>{{ total }}</span></div>
-        <div class="stat-box stat-pos">Positive <span>{{ positive }}</span></div>
-        <div class="stat-box stat-neg">Negative <span>{{ negative }}</span></div>
-        <div class="stat-box stat-neu">Neutral <span>{{ neutral }}</span></div>
+        <div class="stat-box stat-total">Total Analyzed <span id="stat-total">{{ total }}</span></div>
+        <div class="stat-box stat-pos">Positive <span id="stat-pos">{{ positive }}</span></div>
+        <div class="stat-box stat-neg">Negative <span id="stat-neg">{{ negative }}</span></div>
+        <div class="stat-box stat-neu">Neutral <span id="stat-neu">{{ neutral }}</span></div>
     </div>
 
-    <!-- MANUAL COMMENT ANALYSIS -->
+    <!-- YOUTUBE KEYWORD SEARCH — MAIN FEATURE -->
     <div class="card">
-        <h2>✍️ Analyze a Comment</h2>
-        <form method="POST">
-            <textarea name="comment" placeholder="Paste any comment or review here..."></textarea>
-            <input type="hidden" name="keyword" value="{{ search_keyword or 'technology' }}">
-            <button type="submit" class="btn">Analyze Now</button>
-        </form>
+        <h2>▶️ Search YouTube Comments by Keyword</h2>
 
-        {% if result %}
-        <div class="result-box">
-            <p>Analysis Result:</p>
-            {% if result == 'Positive' %}
-            <h3>✅ Positive</h3>
-            {% elif result == 'Negative' %}
-            <h3>❌ Negative</h3>
-            {% else %}
-            <h3>⚪ Neutral</h3>
-            {% endif %}
-            {% if confidence %}
-            <p style="margin-top:8px; font-size:14px;">Confidence: <strong>{{ confidence }}</strong></p>
-            {% endif %}
+        <input type="text" id="keywordInput"
+               placeholder="Enter keyword e.g. IPL 2025, iPhone 16, Pushpa 2, Bitcoin..." />
+
+        <!-- QUICK TAGS -->
+        <div class="quick-tags">
+            <label>Try:</label>
+            <button class="tag" onclick="quickSearch('IPL 2025')">IPL 2025</button>
+            <button class="tag" onclick="quickSearch('Pushpa 2')">Pushpa 2</button>
+            <button class="tag" onclick="quickSearch('iPhone 16')">iPhone 16</button>
+            <button class="tag" onclick="quickSearch('Bitcoin')">Bitcoin</button>
+            <button class="tag" onclick="quickSearch('AI technology')">AI Technology</button>
         </div>
-        {% endif %}
-    </div>
 
-    <!-- KEYWORD SEARCH FOR REAL DATA -->
-    <div class="card">
-        <h2>🔍 Search Real News by Keyword</h2>
-        <input type="text" id="keywordInput" placeholder="Enter keyword e.g. cricket, AI, Bitcoin, Modi..." />
-        <button class="btn" onclick="searchKeyword()">Fetch Real Data &amp; Analyze</button>
-        <div class="spinner" id="spinner">⏳ Fetching real news data, please wait...</div>
+        <button class="btn" id="searchBtn" onclick="searchKeyword()">
+            🔍 Fetch YouTube Comments &amp; Analyze
+        </button>
+
+        <!-- LOADING -->
+        <div class="spinner" id="spinner">
+            <div class="spinner-dots">
+                <span></span><span></span><span></span>
+            </div>
+            <p>Fetching real YouTube comments...</p>
+        </div>
+
+        <!-- RESULTS -->
         <div id="searchResults"></div>
     </div>
-
-    <!-- NEWS RESULTS FROM FORM POST -->
-    {% if news_results %}
-    <div class="card">
-        <h2>📰 Results for "{{ search_keyword }}"</h2>
-        <div class="search-summary">
-            <span class="ss-total">Total: {{ news_results | length }}</span>
-            <span class="ss-positive">✅ Positive: {{ news_results | selectattr('sentiment','equalto','Positive') | list | length }}</span>
-            <span class="ss-negative">❌ Negative: {{ news_results | selectattr('sentiment','equalto','Negative') | list | length }}</span>
-            <span class="ss-neutral">⚪ Neutral: {{ news_results | selectattr('sentiment','equalto','Neutral') | list | length }}</span>
-        </div>
-        <div class="news-list">
-            {% for item in news_results %}
-            <div class="news-item">
-                <p>{{ item.text }}</p>
-                <div class="news-meta">
-                    <span>📰 {{ item.source }}</span>
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <span class="badge badge-{{ item.sentiment | lower }}">{{ item.sentiment }}</span>
-                        <span>{{ item.confidence }}% confidence</span>
-                        {% if item.url and item.url != '#' %}
-                        <a href="{{ item.url }}" target="_blank">Read &#8594;</a>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
 
 </div>
 
 <script>
+function quickSearch(keyword) {
+    document.getElementById('keywordInput').value = keyword;
+    searchKeyword();
+}
+
 async function searchKeyword() {
     var keyword = document.getElementById('keywordInput').value.trim();
     if (!keyword) {
@@ -283,6 +365,9 @@ async function searchKeyword() {
         return;
     }
 
+    var btn = document.getElementById('searchBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Fetching...';
     document.getElementById('spinner').style.display = 'block';
     document.getElementById('searchResults').innerHTML = '';
 
@@ -290,54 +375,81 @@ async function searchKeyword() {
         var res = await fetch('/search', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ keyword: keyword, limit: 30 })
+            body: JSON.stringify({ keyword: keyword })
         });
 
         var data = await res.json();
         document.getElementById('spinner').style.display = 'none';
+        btn.disabled = false;
+        btn.textContent = '🔍 Fetch YouTube Comments & Analyze';
 
         if (data.error) {
             document.getElementById('searchResults').innerHTML =
-                '<p style="color:#ef4444;margin-top:15px;">⚠️ ' + data.error + '</p>';
+                '<div class="error-msg">⚠️ ' + data.error + '</div>';
             return;
         }
 
-        var html = '<div style="margin-top:20px;">';
+        if (data.total === 0) {
+            document.getElementById('searchResults').innerHTML =
+                '<div class="error-msg">No comments found. Try another keyword.</div>';
+            return;
+        }
+
+        var total = data.total;
+        var posW = Math.round(data.positive / total * 100);
+        var negW = Math.round(data.negative / total * 100);
+        var neuW = Math.round(data.neutral  / total * 100);
+
+        var html = '<div style="margin-top:24px;">';
+
+        // Summary pills
         html += '<div class="search-summary">';
-        html += '<span class="ss-total">Total: ' + data.total + '</span>';
+        html += '<span class="ss-total">💬 ' + total + ' comments</span>';
         html += '<span class="ss-positive">✅ Positive: ' + data.positive + '</span>';
         html += '<span class="ss-negative">❌ Negative: ' + data.negative + '</span>';
         html += '<span class="ss-neutral">⚪ Neutral: ' + data.neutral + '</span>';
-        html += '</div><div class="news-list">';
+        html += '</div>';
 
-        data.results.forEach(function(item) {
-            var badgeClass = item.sentiment === 'Positive' ? 'badge-positive'
-                           : item.sentiment === 'Negative' ? 'badge-negative'
-                           : 'badge-neutral';
+        // Sentiment bar
+        html += '<div class="sentiment-bar">';
+        html += '<div class="bar-pos" style="width:' + posW + '%"></div>';
+        html += '<div class="bar-neg" style="width:' + negW + '%"></div>';
+        html += '<div class="bar-neu" style="width:' + neuW + '%"></div>';
+        html += '</div>';
+
+        // Comment cards
+        data.results.forEach(function(item, i) {
+            var cls = item.sentiment === 'Positive' ? 'positive'
+                    : item.sentiment === 'Negative' ? 'negative' : 'neutral';
+            var badgeCls = 'badge-' + cls;
             var icon = item.sentiment === 'Positive' ? '✅'
                      : item.sentiment === 'Negative' ? '❌' : '⚪';
-            var readLink = (item.url && item.url !== '#')
-                ? '<a href="' + item.url + '" target="_blank">Read →</a>' : '';
 
-            html += '<div class="news-item">';
-            html += '<p>' + item.text + '</p>';
-            html += '<div class="news-meta">';
-            html += '<span>📰 ' + item.source + '</span>';
-            html += '<div style="display:flex;align-items:center;gap:10px;">';
-            html += '<span class="badge ' + badgeClass + '">' + icon + ' ' + item.sentiment + '</span>';
-            html += '<span>' + item.confidence + '% confidence</span>';
-            html += readLink;
-            html += '</div></div></div>';
+            html += '<div class="comment-card ' + cls + '" style="animation-delay:' + (i * 0.04) + 's">';
+            html += '<div class="comment-text">' + item.text + '</div>';
+            html += '<div class="comment-meta">';
+            html += '<div class="comment-left">';
+            html += '<span>👤 ' + item.author + '</span>';
+            html += '<span>👍 ' + item.likes + '</span>';
+            html += '<span class="badge ' + badgeCls + '">' + icon + ' ' + item.sentiment + '</span>';
+            html += '<span style="opacity:0.5;">' + item.confidence + '%</span>';
+            html += '</div>';
+            html += '<a href="' + item.video_url + '" target="_blank" class="video-link">▶ ' + item.video_title.substring(0, 40) + '...</a>';
+            html += '</div></div>';
         });
 
-        html += '</div></div>';
+        html += '</div>';
         document.getElementById('searchResults').innerHTML = html;
+
+        // Refresh stats
         refreshStats();
 
     } catch(err) {
         document.getElementById('spinner').style.display = 'none';
+        btn.disabled = false;
+        btn.textContent = '🔍 Fetch YouTube Comments & Analyze';
         document.getElementById('searchResults').innerHTML =
-            '<p style="color:#ef4444;margin-top:15px;">⚠️ Something went wrong. Please try again.</p>';
+            '<div class="error-msg">⚠️ Something went wrong. Make sure app.py is running.</div>';
     }
 }
 
@@ -345,11 +457,10 @@ async function refreshStats() {
     try {
         var res = await fetch('/summary');
         var data = await res.json();
-        var spans = document.querySelectorAll('.stat-box span');
-        spans[0].textContent = data.total;
-        spans[1].textContent = data.positive;
-        spans[2].textContent = data.negative;
-        spans[3].textContent = data.neutral;
+        document.getElementById('stat-total').textContent = data.total;
+        document.getElementById('stat-pos').textContent   = data.positive;
+        document.getElementById('stat-neg').textContent   = data.negative;
+        document.getElementById('stat-neu').textContent   = data.neutral;
     } catch(e) {}
 }
 

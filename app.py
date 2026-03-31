@@ -9,7 +9,7 @@ app = Flask(__name__)
 DB_PATH = "database.db"
 
 # ⚠️ Replace with your actual YouTube API Key from Google Console
-YOUTUBE_API_KEY = "YOUR_YOUTUBE_API_KEY_HERE" 
+YOUTUBE_API_KEY = "AIzaSyCgcCrMS1uivhs-a2YLNZEXF1s0wfzsfRU"
 
 analyzer = SentimentIntensityAnalyzer()
 

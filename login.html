@@ -459,6 +459,7 @@ body::before{
 </body>
 </html>
 -->
+<!--
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -701,6 +702,301 @@ body::before{
             // Toggle the icon
             this.classList.toggle('fa-eye');
             this.classList.toggle('fa-eye-slash');
+        });
+    </script>
+
+</body>
+</html>
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sentiment AI</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* RESET & BASE */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: url("{{ url_for('static', filename='background.jpeg') }}") no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* DARK OVERLAY */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 15, 30, 0.85);
+            z-index: -1;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 60px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .nav-left {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .nav-right a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .nav-right a:hover {
+            color: #3b82f6;
+        }
+
+        /* CENTER BOX */
+        .center-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100%;
+        }
+
+        /* LOGIN CARD */
+        .login-card {
+            width: 400px;
+            padding: 45px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .login-card h2 {
+            margin-bottom: 25px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        /* INPUT GROUP (For Password Toggle) */
+        .input-group {
+            position: relative;
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .login-card input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #3b82f6;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            opacity: 0.6;
+            transition: 0.3s;
+        }
+
+        .toggle-password:hover {
+            opacity: 1;
+            color: #3b82f6;
+        }
+
+        /* FORGOT PASSWORD */
+        .forgot-pass {
+            display: block;
+            text-align: right;
+            font-size: 12px;
+            color: #3b82f6;
+            text-decoration: none;
+            margin-top: -5px;
+            margin-bottom: 15px;
+        }
+
+        /* BUTTON */
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #2563eb, #9333ea);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        /* SUCCESS MESSAGE POPUP */
+        #success-toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #10b981;
+            color: #fff;
+            text-align: center;
+            border-radius: 50px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1001;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        #success-toast.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @keyframes fadein {
+            from { top: 0; opacity: 0; }
+            to { top: 30px; opacity: 1; }
+        }
+
+        @keyframes fadeout {
+            from { top: 30px; opacity: 1; }
+            to { top: 0; opacity: 0; }
+        }
+
+        /* FOOTER LINKS */
+        .login-card p {
+            margin-top: 20px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .login-card a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-card a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="success-toast">
+        <i class="fas fa-check-circle"></i> Login Successful! Redirecting...
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-left">Sentiment AI</div>
+        <div class="nav-right">
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+            <a href="/about">About</a>
+        </div>
+    </nav>
+
+    <main class="center-box">
+        <div class="login-card">
+            <h2>Login</h2>
+            
+            <form id="loginForm" method="POST">
+                <div class="input-group">
+                    <input type="email" name="email" placeholder="Email" required>
+                </div>
+
+                <div class="input-group">
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                    <i class="fas fa-eye toggle-password" id="eyeIcon"></i>
+                </div>
+
+                <a href="/forgot-password" class="forgot-pass">Forgot Password?</a>
+
+                <button type="submit" class="btn-login">Login</button>
+            </form>
+
+            <p>Don't have an account? <a href="/register">Register</a></p>
+        </div>
+    </main>
+
+    <script>
+        // SHOW/HIDE PASSWORD LOGIC
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        eyeIcon.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // Toggle icon
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        // SIMULATED LOGIN SUCCESS (For demonstration)
+        // In a real app, you'd trigger this after a successful fetch() or based on a Flask flash message
+        const loginForm = document.getElementById('loginForm');
+        const toast = document.getElementById('success-toast');
+
+        loginForm.addEventListener('submit', function(e) {
+            // Remove e.preventDefault() if you want the form to actually submit to Flask
+            // e.preventDefault(); 
+            
+            // Show toast
+            toast.className = "show";
+            
+            // Redirect after 3 seconds (optional delay to show message)
+            // setTimeout(() => { window.location.href = "/dashboard"; }, 3000);
         });
     </script>
 

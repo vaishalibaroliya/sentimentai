@@ -37,12 +37,9 @@
         }
 
         .brand { font-size: 22px; font-weight: 700; }
-
         .menu a {
-            color: white;
-            text-decoration: none;
-            margin-left: 20px;
-            font-size: 14px;
+            color: white; text-decoration: none;
+            margin-left: 20px; font-size: 14px;
             transition: color 0.3s;
         }
         .menu a:hover { color: #3b82f6; }
@@ -63,8 +60,10 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
-        .card h2 { font-size: 22px; margin-bottom: 20px; color: #93c5fd; }
+        .card h2 { font-size: 22px; margin-bottom: 8px; color: #93c5fd; }
+        .card .subtitle { font-size: 13px; color: rgba(255,255,255,0.4); margin-bottom: 24px; }
 
+        /* STATS */
         .stats {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -87,9 +86,10 @@
         .stat-neg   { color: #ef4444; }
         .stat-neu   { color: #f59e0b; }
 
+        /* INPUT */
         input[type="text"] {
             width: 100%;
-            padding: 14px;
+            padding: 14px 18px;
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 12px;
             background: rgba(255,255,255,0.06);
@@ -98,130 +98,138 @@
             outline: none;
             transition: 0.3s;
             margin-bottom: 14px;
+            font-family: 'Poppins', sans-serif;
         }
 
         input[type="text"]:focus {
-            border-color: #3b82f6;
-            background: rgba(255,255,255,0.1);
+            border-color: #ff4444;
+            background: rgba(255,68,68,0.05);
         }
-        input::placeholder { color: rgba(255,255,255,0.4); }
+        input::placeholder { color: rgba(255,255,255,0.35); }
 
+        /* BUTTON */
         .btn {
             width: 100%;
             padding: 14px;
             border: none;
             border-radius: 30px;
-            background: linear-gradient(135deg, #2563eb, #9333ea);
+            background: linear-gradient(135deg, #ff4444, #cc0000);
             color: white;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.2s, opacity 0.2s;
+            font-family: 'Poppins', sans-serif;
         }
         .btn:hover { transform: scale(1.02); opacity: 0.95; }
         .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-        /* QUICK TAGS */
-        .quick-tags {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .quick-tags label {
-            font-size: 12px;
-            color: rgba(255,255,255,0.4);
-            align-self: center;
-        }
-
-        .tag {
-            padding: 5px 14px;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.15);
-            background: transparent;
-            color: rgba(255,255,255,0.6);
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .tag:hover {
-            border-color: #3b82f6;
-            color: #3b82f6;
-            background: rgba(59,130,246,0.08);
-        }
 
         /* SPINNER */
         .spinner {
             display: none;
             text-align: center;
             padding: 30px;
-            font-size: 14px;
             color: rgba(255,255,255,0.5);
+            font-size: 14px;
         }
 
-        .spinner-dots {
-            display: inline-flex;
-            gap: 6px;
-            margin-bottom: 10px;
-        }
-
+        .spinner-dots { display: inline-flex; gap: 6px; margin-bottom: 10px; }
         .spinner-dots span {
             width: 8px; height: 8px;
             border-radius: 50%;
-            background: #3b82f6;
+            background: #ff4444;
             animation: bounce 1.2s infinite ease-in-out;
         }
-        .spinner-dots span:nth-child(2) { animation-delay: 0.2s; }
-        .spinner-dots span:nth-child(3) { animation-delay: 0.4s; }
+        .spinner-dots span:nth-child(2) { animation-delay: 0.2s; background: #ff8888; }
+        .spinner-dots span:nth-child(3) { animation-delay: 0.4s; background: #ffaaaa; }
 
         @keyframes bounce {
             0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
-            40% { transform: scale(1); opacity: 1; }
+            40%  { transform: scale(1); opacity: 1; }
         }
 
-        /* SUMMARY PILLS */
-        .search-summary {
+        /* VIDEO INFO CARD */
+        .video-info {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            padding: 16px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 14px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .video-thumb {
+            width: 140px;
+            min-width: 140px;
+            height: 80px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .video-details h3 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+
+        .video-details p {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 8px;
+        }
+
+        .video-stats { display: flex; gap: 14px; }
+        .video-stats span {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* SENTIMENT SUMMARY */
+        .sent-summary {
             display: flex;
             gap: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             flex-wrap: wrap;
         }
 
-        .search-summary span {
-            padding: 6px 16px;
+        .sent-pill {
+            padding: 7px 18px;
             border-radius: 20px;
             font-size: 13px;
             font-weight: 600;
         }
 
-        .ss-total    { background: rgba(255,255,255,0.1); }
-        .ss-positive { background: rgba(16,185,129,0.15); color: #10b981; }
-        .ss-negative { background: rgba(239,68,68,0.15);  color: #ef4444; }
-        .ss-neutral  { background: rgba(245,158,11,0.15); color: #f59e0b; }
+        .pill-total    { background: rgba(255,255,255,0.1); }
+        .pill-positive { background: rgba(16,185,129,0.15); color: #10b981; }
+        .pill-negative { background: rgba(239,68,68,0.15);  color: #ef4444; }
+        .pill-neutral  { background: rgba(245,158,11,0.15); color: #f59e0b; }
 
         /* SENTIMENT BAR */
         .sentiment-bar {
             display: flex;
-            height: 6px;
-            border-radius: 6px;
+            height: 8px;
+            border-radius: 8px;
             overflow: hidden;
             margin-bottom: 24px;
             gap: 2px;
         }
-        .bar-pos { background: #10b981; }
-        .bar-neg { background: #ef4444; }
-        .bar-neu { background: #f59e0b; }
+        .bar-pos { background: #10b981; transition: width 0.8s ease; }
+        .bar-neg { background: #ef4444; transition: width 0.8s ease; }
+        .bar-neu { background: #f59e0b; transition: width 0.8s ease; }
 
         /* COMMENT CARDS */
         .comment-card {
             padding: 16px;
             border-radius: 12px;
             background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
-            margin-bottom: 12px;
+            border: 1px solid rgba(255,255,255,0.07);
+            margin-bottom: 10px;
             border-left: 3px solid transparent;
             transition: background 0.2s;
             animation: fadeIn 0.3s ease both;
@@ -236,7 +244,7 @@
             font-size: 14px;
             line-height: 1.6;
             margin-bottom: 10px;
-            color: rgba(255,255,255,0.9);
+            color: rgba(255,255,255,0.88);
         }
 
         .comment-meta {
@@ -246,13 +254,10 @@
             font-size: 12px;
             color: rgba(255,255,255,0.4);
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
         }
 
-        .comment-left { display: flex; align-items: center; gap: 10px; }
-
         .badge {
-            display: inline-block;
             padding: 3px 10px;
             border-radius: 12px;
             font-size: 11px;
@@ -262,18 +267,102 @@
         .badge-negative { background: rgba(239,68,68,0.2);  color: #ef4444; }
         .badge-neutral  { background: rgba(245,158,11,0.2); color: #f59e0b; }
 
-        .video-link {
-            color: #ff4444;
-            text-decoration: none;
-            font-size: 11px;
+        /* FILTER TABS */
+        .filter-tabs {
             display: flex;
-            align-items: center;
-            gap: 4px;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
         }
-        .video-link:hover { color: #ff6666; }
 
+        .filter-tab {
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: transparent;
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .filter-tab:hover, .filter-tab.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .filter-tab.tab-pos.active { background: rgba(16,185,129,0.15); color: #10b981; border-color: #10b981; }
+        .filter-tab.tab-neg.active { background: rgba(239,68,68,0.15);  color: #ef4444; border-color: #ef4444; }
+        .filter-tab.tab-neu.active { background: rgba(245,158,11,0.15); color: #f59e0b; border-color: #f59e0b; }
+
+        /* TOP COMMENTS SECTION */
+        .top-comments-section {
+            margin-bottom: 24px;
+        }
+
+        .top-comments-section h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: rgba(255,255,255,0.7);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .top-comments-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .top-comment-col { display: flex; flex-direction: column; gap: 8px; }
+
+        .top-comment-col h5 {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+
+        .top-col-pos h5 { background: rgba(16,185,129,0.15); color: #10b981; }
+        .top-col-neg h5 { background: rgba(239,68,68,0.15);  color: #ef4444; }
+        .top-col-neu h5 { background: rgba(245,158,11,0.15); color: #f59e0b; }
+
+        .top-comment-card {
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.07);
+            font-size: 13px;
+            line-height: 1.5;
+            color: rgba(255,255,255,0.85);
+            border-left: 3px solid transparent;
+        }
+
+        .top-col-pos .top-comment-card { border-left-color: #10b981; }
+        .top-col-neg .top-comment-card { border-left-color: #ef4444; }
+        .top-col-neu .top-comment-card { border-left-color: #f59e0b; }
+
+        .top-comment-author {
+            font-size: 11px;
+            color: rgba(255,255,255,0.35);
+            margin-top: 6px;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            margin: 20px 0;
+        }
+
+        /* ERROR */
         .error-msg {
-            padding: 14px;
+            padding: 14px 18px;
             border-radius: 10px;
             background: rgba(239,68,68,0.1);
             border: 1px solid rgba(239,68,68,0.2);
@@ -291,6 +380,9 @@
             .stats { grid-template-columns: repeat(2, 1fr); }
             .navbar { padding: 0 20px; }
             .page { padding: 90px 16px 40px; }
+            .video-info { flex-direction: column; }
+            .video-thumb { width: 100%; height: 160px; }
+            .top-comments-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -317,25 +409,16 @@
         <div class="stat-box stat-neu">Neutral <span id="stat-neu">{{ neutral }}</span></div>
     </div>
 
-    <!-- YOUTUBE KEYWORD SEARCH — MAIN FEATURE -->
+    <!-- YOUTUBE VIDEO URL INPUT -->
     <div class="card">
-        <h2>▶️ Search YouTube Comments by Keyword</h2>
+        <h2>▶️ Analyze YouTube Video Comments</h2>
+        <p class="subtitle">Paste any YouTube video link — we'll fetch all comments and analyze the public sentiment</p>
 
-        <input type="text" id="keywordInput"
-               placeholder="Enter keyword e.g. IPL 2025, iPhone 16, Pushpa 2, Bitcoin..." />
+        <input type="text" id="videoUrl"
+               placeholder="Paste YouTube link here e.g. https://www.youtube.com/watch?v=..." />
 
-        <!-- QUICK TAGS -->
-        <div class="quick-tags">
-            <label>Try:</label>
-            <button class="tag" onclick="quickSearch('IPL 2025')">IPL 2025</button>
-            <button class="tag" onclick="quickSearch('Pushpa 2')">Pushpa 2</button>
-            <button class="tag" onclick="quickSearch('iPhone 16')">iPhone 16</button>
-            <button class="tag" onclick="quickSearch('Bitcoin')">Bitcoin</button>
-            <button class="tag" onclick="quickSearch('AI technology')">AI Technology</button>
-        </div>
-
-        <button class="btn" id="searchBtn" onclick="searchKeyword()">
-            🔍 Fetch YouTube Comments &amp; Analyze
+        <button class="btn" id="analyzeBtn" onclick="analyzeVideo()">
+            🔍 Analyze Comments
         </button>
 
         <!-- LOADING -->
@@ -343,71 +426,78 @@
             <div class="spinner-dots">
                 <span></span><span></span><span></span>
             </div>
-            <p>Fetching real YouTube comments...</p>
+            <p>Fetching comments from YouTube...</p>
         </div>
 
         <!-- RESULTS -->
-        <div id="searchResults"></div>
+        <div id="results"></div>
     </div>
 
 </div>
 
 <script>
-function quickSearch(keyword) {
-    document.getElementById('keywordInput').value = keyword;
-    searchKeyword();
-}
+// Store all comments for filtering
+var allComments = [];
 
-async function searchKeyword() {
-    var keyword = document.getElementById('keywordInput').value.trim();
-    if (!keyword) {
-        alert('Please enter a keyword first!');
+async function analyzeVideo() {
+    var url = document.getElementById('videoUrl').value.trim();
+    if (!url) {
+        alert('Please paste a YouTube video link!');
         return;
     }
 
-    var btn = document.getElementById('searchBtn');
+    var btn = document.getElementById('analyzeBtn');
     btn.disabled = true;
-    btn.textContent = '⏳ Fetching...';
+    btn.textContent = '⏳ Analyzing...';
     document.getElementById('spinner').style.display = 'block';
-    document.getElementById('searchResults').innerHTML = '';
+    document.getElementById('results').innerHTML = '';
+    allComments = [];
 
     try {
-        var res = await fetch('/search', {
+        var res = await fetch('/analyze_video', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ keyword: keyword })
+            body: JSON.stringify({ video_url: url })
         });
 
         var data = await res.json();
         document.getElementById('spinner').style.display = 'none';
         btn.disabled = false;
-        btn.textContent = '🔍 Fetch YouTube Comments & Analyze';
+        btn.textContent = '🔍 Analyze Comments';
 
         if (data.error) {
-            document.getElementById('searchResults').innerHTML =
+            document.getElementById('results').innerHTML =
                 '<div class="error-msg">⚠️ ' + data.error + '</div>';
             return;
         }
 
-        if (data.total === 0) {
-            document.getElementById('searchResults').innerHTML =
-                '<div class="error-msg">No comments found. Try another keyword.</div>';
-            return;
-        }
+        allComments = data.results;
 
         var total = data.total;
-        var posW = Math.round(data.positive / total * 100);
-        var negW = Math.round(data.negative / total * 100);
-        var neuW = Math.round(data.neutral  / total * 100);
+        var posW = total > 0 ? Math.round(data.positive / total * 100) : 0;
+        var negW = total > 0 ? Math.round(data.negative / total * 100) : 0;
+        var neuW = total > 0 ? Math.round(data.neutral  / total * 100) : 0;
 
         var html = '<div style="margin-top:24px;">';
 
-        // Summary pills
-        html += '<div class="search-summary">';
-        html += '<span class="ss-total">💬 ' + total + ' comments</span>';
-        html += '<span class="ss-positive">✅ Positive: ' + data.positive + '</span>';
-        html += '<span class="ss-negative">❌ Negative: ' + data.negative + '</span>';
-        html += '<span class="ss-neutral">⚪ Neutral: ' + data.neutral + '</span>';
+        // Video info card
+        html += '<div class="video-info">';
+        html += '<img src="' + data.thumbnail + '" class="video-thumb" alt="thumbnail">';
+        html += '<div class="video-details">';
+        html += '<h3><a href="' + data.video_url + '" target="_blank" style="color:white;text-decoration:none;">' + data.video_title + '</a></h3>';
+        html += '<p>📺 ' + data.channel_name + '</p>';
+        html += '<div class="video-stats">';
+        html += '<span>👁 ' + Number(data.view_count).toLocaleString() + ' views</span>';
+        html += '<span>👍 ' + Number(data.like_count).toLocaleString() + ' likes</span>';
+        html += '<span>💬 ' + Number(data.total_comments_on_video).toLocaleString() + ' total comments</span>';
+        html += '</div></div></div>';
+
+        // Sentiment summary pills
+        html += '<div class="sent-summary">';
+        html += '<span class="sent-pill pill-total">💬 ' + total + ' analyzed</span>';
+        html += '<span class="sent-pill pill-positive">✅ Positive: ' + data.positive + ' (' + posW + '%)</span>';
+        html += '<span class="sent-pill pill-negative">❌ Negative: ' + data.negative + ' (' + negW + '%)</span>';
+        html += '<span class="sent-pill pill-neutral">⚪ Neutral: ' + data.neutral + ' (' + neuW + '%)</span>';
         html += '</div>';
 
         // Sentiment bar
@@ -417,45 +507,94 @@ async function searchKeyword() {
         html += '<div class="bar-neu" style="width:' + neuW + '%"></div>';
         html += '</div>';
 
-        // Comment cards
-        data.results.forEach(function(item, i) {
-            var cls = item.sentiment === 'Positive' ? 'positive'
-                    : item.sentiment === 'Negative' ? 'negative' : 'neutral';
-            var badgeCls = 'badge-' + cls;
-            var icon = item.sentiment === 'Positive' ? '✅'
-                     : item.sentiment === 'Negative' ? '❌' : '⚪';
+        // Top comments highlight
+        html += buildTopComments(data.results);
 
-            html += '<div class="comment-card ' + cls + '" style="animation-delay:' + (i * 0.04) + 's">';
-            html += '<div class="comment-text">' + item.text + '</div>';
-            html += '<div class="comment-meta">';
-            html += '<div class="comment-left">';
-            html += '<span>👤 ' + item.author + '</span>';
-            html += '<span>👍 ' + item.likes + '</span>';
-            html += '<span class="badge ' + badgeCls + '">' + icon + ' ' + item.sentiment + '</span>';
-            html += '<span style="opacity:0.5;">' + item.confidence + '%</span>';
-            html += '</div>';
-            html += '<a href="' + item.video_url + '" target="_blank" class="video-link">▶ ' + item.video_title.substring(0, 40) + '...</a>';
-            html += '</div></div>';
-        });
+        // Filter tabs
+        html += '<div class="filter-tabs">';
+        html += '<button class="filter-tab active" onclick="filterComments(\'all\', this)">All (' + total + ')</button>';
+        html += '<button class="filter-tab tab-pos" onclick="filterComments(\'Positive\', this)">✅ Positive (' + data.positive + ')</button>';
+        html += '<button class="filter-tab tab-neg" onclick="filterComments(\'Negative\', this)">❌ Negative (' + data.negative + ')</button>';
+        html += '<button class="filter-tab tab-neu" onclick="filterComments(\'Neutral\', this)">⚪ Neutral (' + data.neutral + ')</button>';
+        html += '</div>';
+
+        html += '<div id="commentsList">';
+        html += buildCommentCards(data.results);
+        html += '</div>';
 
         html += '</div>';
-        document.getElementById('searchResults').innerHTML = html;
+        document.getElementById('results').innerHTML = html;
 
-        // Refresh stats
         refreshStats();
 
     } catch(err) {
         document.getElementById('spinner').style.display = 'none';
         btn.disabled = false;
-        btn.textContent = '🔍 Fetch YouTube Comments & Analyze';
-        document.getElementById('searchResults').innerHTML =
+        btn.textContent = '🔍 Analyze Comments';
+        document.getElementById('results').innerHTML =
             '<div class="error-msg">⚠️ Something went wrong. Make sure app.py is running.</div>';
     }
 }
 
+function buildTopComments(comments) {
+    var pos = comments.filter(function(c) { return c.sentiment === 'Positive'; }).slice(0, 10);
+    var neg = comments.filter(function(c) { return c.sentiment === 'Negative'; }).slice(0, 10);
+    var neu = comments.filter(function(c) { return c.sentiment === 'Neutral';  }).slice(0, 10);
+
+    function makeCards(list) {
+        if (list.length === 0) return '<div class="top-comment-card" style="opacity:0.4;">No comments found</div>';
+        return list.map(function(c) {
+            return '<div class="top-comment-card">' +
+                   c.text.substring(0, 120) + (c.text.length > 120 ? '...' : '') +
+                   '<div class="top-comment-author">👤 ' + c.author + ' · 👍 ' + c.likes + '</div>' +
+                   '</div>';
+        }).join('');
+    }
+
+    return '<div class="top-comments-section">' +
+        '<h4>⭐ Top Comments Highlight</h4>' +
+        '<div class="top-comments-grid">' +
+            '<div class="top-comment-col top-col-pos"><h5>✅ Positive</h5>' + makeCards(pos) + '</div>' +
+            '<div class="top-comment-col top-col-neg"><h5>❌ Negative</h5>' + makeCards(neg) + '</div>' +
+            '<div class="top-comment-col top-col-neu"><h5>⚪ Neutral</h5>'  + makeCards(neu) + '</div>' +
+        '</div>' +
+    '</div>' +
+    '<hr class="divider">';
+}
+
+
+    var html = '';
+    comments.forEach(function(item, i) {
+        var cls     = item.sentiment === 'Positive' ? 'positive' : item.sentiment === 'Negative' ? 'negative' : 'neutral';
+        var badgeCls = 'badge-' + cls;
+        var icon    = item.sentiment === 'Positive' ? '✅' : item.sentiment === 'Negative' ? '❌' : '⚪';
+
+        html += '<div class="comment-card ' + cls + '" style="animation-delay:' + (i * 0.03) + 's">';
+        html += '<div class="comment-text">' + item.text + '</div>';
+        html += '<div class="comment-meta">';
+        html += '<span>👤 ' + item.author + '</span>';
+        html += '<span>👍 ' + item.likes + ' likes</span>';
+        html += '<span class="badge ' + badgeCls + '">' + icon + ' ' + item.sentiment + '</span>';
+        html += '<span style="opacity:0.5;">' + item.confidence + '% confidence</span>';
+        html += '</div></div>';
+    });
+    return html || '<p style="opacity:0.5;text-align:center;padding:20px;">No comments in this category.</p>';
+}
+
+function filterComments(type, el) {
+    // Update active tab
+    document.querySelectorAll('.filter-tab').forEach(function(t) { t.classList.remove('active'); });
+    el.classList.add('active');
+
+    var filtered = type === 'all' ? allComments
+                 : allComments.filter(function(c) { return c.sentiment === type; });
+
+    document.getElementById('commentsList').innerHTML = buildCommentCards(filtered);
+}
+
 async function refreshStats() {
     try {
-        var res = await fetch('/summary');
+        var res  = await fetch('/summary');
         var data = await res.json();
         document.getElementById('stat-total').textContent = data.total;
         document.getElementById('stat-pos').textContent   = data.positive;
@@ -465,8 +604,8 @@ async function refreshStats() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('keywordInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') searchKeyword();
+    document.getElementById('videoUrl').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') analyzeVideo();
     });
 });
 </script>
